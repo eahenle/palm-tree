@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  auth-bot:
+    build: .
+    container_name: auth-bot
+    restart: unless-stopped
+    env_file: .env

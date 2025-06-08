@@ -1,0 +1,53 @@
+name: Generate Blog Post Draft from Chat
+
+on:
+  schedule:
+    - cron: "0 5 * * *"  # Runs daily at 5:00 UTC
+  workflow_dispatch:
+
+jobs:
+  generate-post:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    steps:
+      - name: Checkout blog repo
+        uses: actions/checkout@v3
+        with:
+          ref: drafts  # Or 'main' if you commit directly
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install openai langchain requests playwright
+
+      - name: Install Playwright
+        run: |
+          pip install playwright requests
+          playwright install chromium
+
+      - name: Use existing login session
+        run: cp .github/secrets/auth.json .
+
+      - name: Check if login is valid
+        id: check_auth
+        run: python3 check_auth.py || echo "auth_failed" > auth_status.txt
+
+      - name: Notify if auth expired
+        if: ${{ failure() }}
+        run: python3 notify_login_failure.py
+
+      - name: Notify Discord if login failed
+        if: ${{ failure() }}
+        run: python3 notify_discord.py
+
+      - name: Download recent ChatGPT conversations
+        run: python3 download_chats.py
+
+      - name: Run blog agent (includes chat download)
+        run: python3 blog_agent.py

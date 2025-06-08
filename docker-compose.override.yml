@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  webhook-listener:
+    build:
+      context: ./webhook
+    container_name: webhook-listener
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+    environment:
+      - WEBHOOK_SECRET=changeme  # Same secret you set in GitHub

@@ -1,0 +1,14 @@
+# .github/workflows/pi-notify.yaml
+name: Notify Raspberry Pi to pull updates
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ping-pi:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Just a trigger
+        run: echo "Raspberry Pi will poll and update automatically"

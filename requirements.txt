@@ -1,0 +1,6 @@
+discord.py
+openai
+llama-index
+PyGithub
+python-dotenv
+pytest
