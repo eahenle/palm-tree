@@ -6,12 +6,20 @@ from pathlib import Path
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")  # e.g., "username/blog"
-REPO = Github(GITHUB_TOKEN).get_repo(GITHUB_REPO)
+
+
+def get_repo():
+    """Return the GitHub repo object only when it's actually needed.
+
+    This lazy initialization prevents network calls and credential errors during
+    import-time execution in tests.
+    """
+    return Github(GITHUB_TOKEN).get_repo(GITHUB_REPO)
 
 PR_CONTEXT_FILE = "/tmp/last_pr.txt"
 
 def get_pr_diff_and_comments(pr_number: int):
-    pr = REPO.get_pull(pr_number)
+    pr = get_repo().get_pull(pr_number)
     files = pr.get_files()
     comments = pr.get_review_comments()
 
@@ -42,7 +50,7 @@ def merge_pr_from_context():
     with open(PR_CONTEXT_FILE) as f:
         pr_number = int(f.read().strip())
 
-    pr = REPO.get_pull(pr_number)
+    pr = get_repo().get_pull(pr_number)
     if pr.is_merged():
         return f"🔁 PR #{pr_number} is already merged."
 

@@ -10,19 +10,6 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
 
 from agent_tools import FixPostTool, SuggestTitleTool
 
-# Add these after index creation
-tools = [
-    FixPostTool(pr_number),
-    SuggestTitleTool(),
-]
-
-agent = AgentRunner.from_tools(
-    tools=tools,
-    llm=llm,
-    system_prompt="You are a markdown blog post editing assistant...",
-    context_retriever=index.as_retriever()
-)
-
 
 def handle_pr_request(pr_number: int) -> str:
     # 1. Retrieve PR content from GitHub
@@ -36,11 +23,16 @@ def handle_pr_request(pr_number: int) -> str:
     docs = reader.load_data()
     index = VectorStoreIndex.from_documents(docs)
 
+    # Tools depend on the PR number and are used when building the agent.
+    # They don't use the index directly but operate on GitHub data, while the
+    # index provides contextual retrieval for the agent.
+    tools = [FixPostTool(pr_number), SuggestTitleTool()]
+
     # 4. Create AgentWorkflow
     llm = OpenAI(api_key=OPENAI_API_KEY, model=OPENAI_MODEL)
     service_context = ServiceContext.from_defaults(llm=llm)
     agent = AgentRunner.from_tools(
-        tools=[],
+        tools=tools,
         llm=llm,
         system_prompt="You are a code review assistant for markdown blog posts. Review the proposed edits and suggest improvements.",
         context_retriever=index.as_retriever()
