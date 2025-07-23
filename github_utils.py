@@ -6,7 +6,12 @@ from pathlib import Path
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")  # e.g., "username/blog"
-REPO = Github(GITHUB_TOKEN).get_repo(GITHUB_REPO)
+REPO = None
+if GITHUB_TOKEN and GITHUB_REPO:
+    try:
+        REPO = Github(GITHUB_TOKEN).get_repo(GITHUB_REPO)
+    except Exception:
+        REPO = None
 
 PR_CONTEXT_FILE = "/tmp/last_pr.txt"
 
