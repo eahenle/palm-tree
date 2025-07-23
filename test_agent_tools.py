@@ -1,4 +1,4 @@
-from agentic_blog_bot.agent_tools import SuggestTitleTool
+from agent_tools import SuggestTitleTool
 
 def test_title_suggestion():
     tool = SuggestTitleTool()

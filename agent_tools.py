@@ -1,12 +1,4 @@
-try:
-    from llama_index.core.tools.types import BaseTool
-except Exception:
-    from llama_index.tools.types import BaseTool
-
-try:
-    from llama_index.core.tools.tool_spec.base import ToolMetadata
-except Exception:
-    from llama_index.tools.tool_spec.base import ToolMetadata
+from llama_index.core.tools import BaseTool, ToolMetadata
 from github import Github
 import os
 import re
@@ -31,12 +23,17 @@ class FixPostTool(BaseTool):
     def metadata(self):
         return ToolMetadata(name=self.name, description=self.description)
 
+    @property
+    def metadata(self):
+        return ToolMetadata(name="FixPostTool", description="Fixes blog post content in the PR.")
+
     def __call__(self, file_name: str, new_content: str) -> str:
-        pr = REPO.get_pull(self.pr_number)
+        repo = get_repo()
+        pr = repo.get_pull(self.pr_number)
         branch = pr.head.ref
 
-        contents = REPO.get_contents(file_name, ref=branch)
-        REPO.update_file(contents.path, f"fix: updated {file_name}", new_content, contents.sha, branch=branch)
+        contents = repo.get_contents(file_name, ref=branch)
+        repo.update_file(contents.path, f"fix: updated {file_name}", new_content, contents.sha, branch=branch)
         return f"✅ Updated `{file_name}` in PR #{self.pr_number}"
 
 class SuggestTitleTool(BaseTool):

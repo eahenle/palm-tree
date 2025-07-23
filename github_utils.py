@@ -11,7 +11,7 @@ REPO = Github(GITHUB_TOKEN).get_repo(GITHUB_REPO) if GITHUB_TOKEN and GITHUB_REP
 PR_CONTEXT_FILE = "/tmp/last_pr.txt"
 
 def get_pr_diff_and_comments(pr_number: int):
-    pr = REPO.get_pull(pr_number)
+    pr = get_repo().get_pull(pr_number)
     files = pr.get_files()
     comments = pr.get_review_comments()
 
@@ -42,7 +42,7 @@ def merge_pr_from_context():
     with open(PR_CONTEXT_FILE) as f:
         pr_number = int(f.read().strip())
 
-    pr = REPO.get_pull(pr_number)
+    pr = get_repo().get_pull(pr_number)
     if pr.is_merged():
         return f"🔁 PR #{pr_number} is already merged."
 
