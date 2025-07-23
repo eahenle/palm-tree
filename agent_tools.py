@@ -1,11 +1,13 @@
 # agent_tools.py
 try:
-    from llama_index.tools.tool_spec.base import BaseTool
-except ModuleNotFoundError:
-    try:  # Compatibility with newer llama_index versions
-        from llama_index.core.tools.tool_spec.base import BaseTool
-    except (ModuleNotFoundError, ImportError):
-        from llama_index.core.tools.types import BaseTool
+    from llama_index.core.tools.types import BaseTool
+except Exception:
+    from llama_index.tools.types import BaseTool
+
+try:
+    from llama_index.core.tools.tool_spec.base import ToolMetadata
+except Exception:
+    from llama_index.tools.tool_spec.base import ToolMetadata
 from github import Github
 import os
 import re
@@ -27,7 +29,6 @@ class FixPostTool(BaseTool):
 
     @property
     def metadata(self):
-        from llama_index.core.tools.tool_spec.base import ToolMetadata
         return ToolMetadata(name=self.name, description=self.description)
 
     def __call__(self, file_name: str, new_content: str) -> str:
@@ -45,7 +46,6 @@ class SuggestTitleTool(BaseTool):
 
     @property
     def metadata(self):
-        from llama_index.core.tools.tool_spec.base import ToolMetadata
         return ToolMetadata(name=self.name, description=self.description)
 
     def __call__(self, content: str) -> str:
