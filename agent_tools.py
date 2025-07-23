@@ -41,7 +41,7 @@ class FixPostTool(BaseTool):
 
 class SuggestTitleTool(BaseTool):
     def __init__(self):
-self.name = "SuggestTitleTool"
+        self.name = "SuggestTitleTool"
         self.description = "Suggests an improved title for a blog post."
 
     @property
