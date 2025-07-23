@@ -17,3 +17,16 @@ def test_should_skip_review(tmp_path, monkeypatch):
 
     assert should_skip_review(pr_number, "abc123")
     assert not should_skip_review(pr_number, "xyz789")
+
+def test_update_cached_sha_roundtrip(tmp_path, monkeypatch):
+    pr_number = 100
+    sha = "def456"
+    cache_file = tmp_path / "pr_shas.json"
+    monkeypatch.setattr("agentic_blog_bot.github_utils.PR_SHAS_FILE", cache_file)
+
+    update_cached_sha(pr_number, sha)
+    try:
+        assert should_skip_review(pr_number, sha)
+    finally:
+        if cache_file.exists():
+            cache_file.unlink()

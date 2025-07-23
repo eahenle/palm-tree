@@ -1,5 +1,12 @@
-# agent_tools.py
-from llama_index.core.tools.types import BaseTool, ToolMetadata
+try:
+    from llama_index.core.tools.types import BaseTool
+except Exception:
+    from llama_index.tools.types import BaseTool
+
+try:
+    from llama_index.core.tools.tool_spec.base import ToolMetadata
+except Exception:
+    from llama_index.tools.tool_spec.base import ToolMetadata
 from github import Github
 import os
 import re
@@ -20,6 +27,10 @@ class FixPostTool(BaseTool):
     def metadata(self) -> ToolMetadata:
         return self._metadata
 
+    @property
+    def metadata(self):
+        return ToolMetadata(name=self.name, description=self.description)
+
     def __call__(self, file_name: str, new_content: str) -> str:
         pr = REPO.get_pull(self.pr_number)
         branch = pr.head.ref
@@ -30,14 +41,12 @@ class FixPostTool(BaseTool):
 
 class SuggestTitleTool(BaseTool):
     def __init__(self):
-        self._metadata = ToolMetadata(
-            name="SuggestTitleTool",
-            description="Suggests an improved title for a blog post."
-        )
+        self.name = "SuggestTitleTool"
+        self.description = "Suggests an improved title for a blog post."
 
     @property
-    def metadata(self) -> ToolMetadata:
-        return self._metadata
+    def metadata(self):
+        return ToolMetadata(name=self.name, description=self.description)
 
     def __call__(self, content: str) -> str:
         match = re.search(r"# (.+)", content)
