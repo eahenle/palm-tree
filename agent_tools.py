@@ -1,4 +1,3 @@
-# agent_tools.py
 try:
     from llama_index.core.tools.types import BaseTool
 except Exception:
@@ -14,18 +13,19 @@ import re
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")
-REPO = None
-if GITHUB_TOKEN and GITHUB_REPO:
-    try:
-        REPO = Github(GITHUB_TOKEN).get_repo(GITHUB_REPO)
-    except Exception:
-        REPO = None
+REPO = Github(GITHUB_TOKEN).get_repo(GITHUB_REPO) if GITHUB_TOKEN and GITHUB_REPO else None
 
 class FixPostTool(BaseTool):
     def __init__(self, pr_number: int):
-        self.name = "FixPostTool"
-        self.description = "Fixes blog post content in the PR."
         self.pr_number = pr_number
+        self._metadata = ToolMetadata(
+            name="FixPostTool",
+            description="Fixes blog post content in the PR."
+        )
+
+    @property
+    def metadata(self) -> ToolMetadata:
+        return self._metadata
 
     @property
     def metadata(self):
@@ -41,7 +41,7 @@ class FixPostTool(BaseTool):
 
 class SuggestTitleTool(BaseTool):
     def __init__(self):
-        self.name = "SuggestTitleTool"
+self.name = "SuggestTitleTool"
         self.description = "Suggests an improved title for a blog post."
 
     @property
@@ -53,10 +53,6 @@ class SuggestTitleTool(BaseTool):
         if not match:
             return "❌ No H1 title found."
         original = match.group(1)
-        suggestion = (
-            original.title()
-            .replace(" And ", " and ")
-            .replace(" Of ", " of ")
-            .replace(" A ", " a ")
-        )
+        suggestion = original.title()
+        suggestion = re.sub(r"\b(And|Of|The|A|An)\b", lambda m: m.group(0).lower(), suggestion)
         return f"💡 Suggested title: {suggestion}"
