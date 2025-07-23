@@ -153,36 +153,40 @@ def generate_blog_draft(idea: str) -> str:
 
 
 def save_draft_to_jekyll(idea: str, content: str, category="chatgpt", tags=None):
+    """Save a generated draft to the Jekyll posts directory.
+
+    Returns the filename and the full markdown content so it can be committed
+    to a git repository by the caller.
+    """
     if tags is None:
         tags = ["ai", "automation", "chatgpt"]
 
     now = datetime.datetime.now()
     date_str = now.strftime("%Y-%m-%d")
-    datetime_str = now.strftime("%Y-%m-%d %H:%M:%S %z")
 
     # Create slug-safe title
     slug = "-".join(idea.lower().split()[:6])
     slug = "".join(c if c.isalnum() or c == "-" else "" for c in slug)
     filename = f"{date_str}-{slug}.md"
 
-    post_path = Path("../your-jekyll-site/_posts/") + filename
+    post_path = POSTS_DIR / filename
 
-    front_matter = f"""---
-        layout: post
-        title: "{idea}\
-        date: {now.strftime('%Y-%m-%d %H:%M:%S')} -0700
-        categories: [{category}]
-        tags: [{', '.join(tags)}]
-        ---
+    front_matter = (
+        "---\n"
+        f"layout: post\n"
+        f"title: \"{idea}\"\n"
+        f"date: {now.strftime('%Y-%m-%d %H:%M:%S')} -0700\n"
+        f"categories: [{category}]\n"
+        f"tags: [{', '.join(tags)}]\n"
+        "---\n\n"
+    )
 
-        """
+    post_content = front_matter + content.strip()
 
-    post_content = front_matter + "\n" + content.strip()
-
-    with open(post_path, "w", encoding="utf-8") as f:
-        f.write(post_content)
+    post_path.write_text(post_content, encoding="utf-8")
 
     print(f"Saved post to: {post_path}")
+    return filename, post_content
 
 
 # === Main Agent Flow ===
@@ -202,7 +206,7 @@ async def run_agent():
         for idea in ideas:
             blog_post = generate_blog_draft(idea)
             filename, content = save_draft_to_jekyll(idea, blog_post)
-            branch = create_branch_and_commit_post(filename, content)
+            branch = create_branch_and_commit_post(BLOG_REPO_DIR, filename, content)
             open_pull_request(REPO, branch, BASE_BRANCH, GITHUB_TOKEN, idea)
 
     processed_ids.update(new_ids)
