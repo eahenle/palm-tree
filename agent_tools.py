@@ -1,4 +1,3 @@
-# agent_tools.py
 from llama_index.core.tools import BaseTool, ToolMetadata
 from github import Github
 import os
@@ -6,19 +5,23 @@ import re
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")
-
-
-def get_repo():
-    """Return the GitHub repo object when needed.
-
-    Instantiating the repository lazily avoids side effects when this module is
-    imported in tests where no network access or credentials are available.
-    """
-    return Github(GITHUB_TOKEN).get_repo(GITHUB_REPO)
+REPO = Github(GITHUB_TOKEN).get_repo(GITHUB_REPO) if GITHUB_TOKEN and GITHUB_REPO else None
 
 class FixPostTool(BaseTool):
     def __init__(self, pr_number: int):
         self.pr_number = pr_number
+        self._metadata = ToolMetadata(
+            name="FixPostTool",
+            description="Fixes blog post content in the PR."
+        )
+
+    @property
+    def metadata(self) -> ToolMetadata:
+        return self._metadata
+
+    @property
+    def metadata(self):
+        return ToolMetadata(name=self.name, description=self.description)
 
     @property
     def metadata(self):
@@ -35,21 +38,18 @@ class FixPostTool(BaseTool):
 
 class SuggestTitleTool(BaseTool):
     def __init__(self):
-        pass
+        self.name = "SuggestTitleTool"
+        self.description = "Suggests an improved title for a blog post."
 
     @property
     def metadata(self):
-        return ToolMetadata(name="SuggestTitleTool", description="Suggests an improved title for a blog post.")
+        return ToolMetadata(name=self.name, description=self.description)
 
     def __call__(self, content: str) -> str:
         match = re.search(r"# (.+)", content)
         if not match:
             return "❌ No H1 title found."
         original = match.group(1)
-        suggestion = (
-            original.title()
-            .replace("And", "and")
-            .replace("Of", "of")
-            .replace(" A ", " a ")
-        )  # Toy example to keep short articles lowercase
+        suggestion = original.title()
+        suggestion = re.sub(r"\b(And|Of|The|A|An)\b", lambda m: m.group(0).lower(), suggestion)
         return f"💡 Suggested title: {suggestion}"

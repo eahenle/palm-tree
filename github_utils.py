@@ -6,15 +6,7 @@ from pathlib import Path
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")  # e.g., "username/blog"
-
-
-def get_repo():
-    """Return the GitHub repo object only when it's actually needed.
-
-    This lazy initialization prevents network calls and credential errors during
-    import-time execution in tests.
-    """
-    return Github(GITHUB_TOKEN).get_repo(GITHUB_REPO)
+REPO = Github(GITHUB_TOKEN).get_repo(GITHUB_REPO) if GITHUB_TOKEN and GITHUB_REPO else None
 
 PR_CONTEXT_FILE = "/tmp/last_pr.txt"
 
