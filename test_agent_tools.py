@@ -1,4 +1,4 @@
-from agent_tools import SuggestTitleTool
+from authorship.agent_tools import SuggestTitleTool
 
 def test_title_suggestion():
     tool = SuggestTitleTool()

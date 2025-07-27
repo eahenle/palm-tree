@@ -3,12 +3,12 @@ import os
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, ServiceContext
 from llama_index.agent import OpenAIAgentWorker, AgentRunner
 from llama_index.llms import OpenAI
-from github_utils import get_pr_diff_and_comments, save_pr_to_local
+from publishing.github_utils import get_pr_diff_and_comments, save_pr_to_local
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
 
-from agent_tools import FixPostTool, SuggestTitleTool
+from .agent_tools import FixPostTool, SuggestTitleTool
 
 
 def handle_pr_request(pr_number: int) -> str:

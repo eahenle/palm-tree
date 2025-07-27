@@ -1,7 +1,7 @@
 # discord_bot.py
 import os
 import discord
-from llama_agent import handle_pr_request
+from .llama_agent import handle_pr_request
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -26,7 +26,7 @@ async def on_message(message):
 
     if content.lower().startswith("!lgtm"):
         await message.channel.send("✅ Merge command received. Merging PR...")
-        from github_utils import merge_pr_from_context
+        from publishing.github_utils import merge_pr_from_context
         result = merge_pr_from_context()
         await message.channel.send(result)
 

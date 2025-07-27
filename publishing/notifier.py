@@ -36,7 +36,7 @@ def send_discord_message(content: str):
         print(f"❌ Discord webhook error: {response.text}")
 
 
-from agentic_blog_bot.config import OPENAI_API_KEY
+from config import OPENAI_API_KEY
 import openai
 
 def summarize_blog_post(post_content: str, pr_title: str) -> str:
