@@ -1,6 +1,6 @@
 from github import Github
-from agentic_blog_bot.config import GITHUB_REPO, GITHUB_TOKEN
-from agentic_blog_bot.notifier import (
+from config import GITHUB_REPO, GITHUB_TOKEN
+from .notifier import (
     send_email,
     send_discord_message,
     summarize_blog_post,
@@ -43,7 +43,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-from agentic_blog_bot.linkedin_poster import post_to_linkedin
+from .linkedin_poster import post_to_linkedin
 
 # Inside the PR merge block:
 post_to_linkedin(summary, title, url)

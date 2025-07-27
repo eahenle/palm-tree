@@ -1,7 +1,6 @@
 """Proxy module for backwards compatibility."""
-
 from importlib import import_module
 import sys
-
-_module = import_module("notifier")
+_module = import_module("publishing.notifier")
 sys.modules[__name__] = _module
+

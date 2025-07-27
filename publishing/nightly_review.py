@@ -1,6 +1,6 @@
 from github import Github
-from agentic_blog_bot.notifier import send_email, send_discord_message
-from agentic_blog_bot.config import GITHUB_REPO, GITHUB_TOKEN
+from .notifier import send_email, send_discord_message
+from config import GITHUB_REPO, GITHUB_TOKEN
 
 gh = Github(GITHUB_TOKEN)
 repo = gh.get_repo(GITHUB_REPO)
