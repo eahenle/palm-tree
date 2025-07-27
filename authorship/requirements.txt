@@ -1,0 +1,7 @@
+discord.py
+openai
+llama-index
+PyGithub
+python-dotenv
+langchain
+requests

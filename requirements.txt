@@ -1,6 +1,5 @@
-discord.py
-openai
-llama-index
-PyGithub
-python-dotenv
+-r authorship/requirements.txt
+-r publishing/requirements.txt
+-r operations/requirements.txt
+-r curation/requirements.txt
 pytest
