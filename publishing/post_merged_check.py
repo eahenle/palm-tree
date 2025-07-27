@@ -1,11 +1,14 @@
+import os
+from dotenv import load_dotenv
 from github import Github
-from config import GITHUB_REPO, GITHUB_TOKEN
 from .notifier import (
     send_email,
     send_discord_message,
     summarize_blog_post,
 )
 import re
+
+load_dotenv()
 
 
 def extract_markdown_files_from_diff(pr) -> dict:
@@ -19,8 +22,8 @@ def extract_markdown_files_from_diff(pr) -> dict:
     }
 
 
-gh = Github(GITHUB_TOKEN)
-repo = gh.get_repo(GITHUB_REPO)
+gh = Github(os.getenv("GITHUB_TOKEN"))
+repo = gh.get_repo(os.getenv("GITHUB_REPO"))
 
 
 def main():

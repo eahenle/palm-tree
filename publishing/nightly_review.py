@@ -1,9 +1,12 @@
+import os
+from dotenv import load_dotenv
 from github import Github
 from .notifier import send_email, send_discord_message
-from config import GITHUB_REPO, GITHUB_TOKEN
 
-gh = Github(GITHUB_TOKEN)
-repo = gh.get_repo(GITHUB_REPO)
+load_dotenv()
+
+gh = Github(os.getenv("GITHUB_TOKEN"))
+repo = gh.get_repo(os.getenv("GITHUB_REPO"))
 
 
 def main():

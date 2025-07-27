@@ -2,6 +2,9 @@ import smtplib
 from email.message import EmailMessage
 import os
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 EMAIL_FROM = os.getenv("EMAIL_FROM")
 EMAIL_TO = os.getenv("EMAIL_TO")
@@ -38,7 +41,7 @@ def send_discord_message(content: str):
         print(f"❌ Discord webhook error: {response.text}")
 
 
-from config import OPENAI_API_KEY
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 import openai
 
 

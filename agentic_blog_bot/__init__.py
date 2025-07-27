@@ -9,7 +9,6 @@ if str(BASE_DIR) not in sys.path:
 _modules_map = {
     "agent_tools": "authorship.agent_tools",
     "github_utils": "publishing.github_utils",
-    "config": "config",
     "notifier": "publishing.notifier",
     "linkedin_poster": "publishing.linkedin_poster",
 }
