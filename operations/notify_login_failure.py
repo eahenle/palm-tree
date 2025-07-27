@@ -15,21 +15,24 @@ To restore functionality:
 This issue was created automatically by the blog agent pipeline.
 """
 
+
 def issue_exists():
     r = requests.get(
         f"https://api.github.com/repos/{REPO}/issues",
         headers={"Authorization": f"Bearer {GITHUB_TOKEN}"},
-        params={"state": "open"}
+        params={"state": "open"},
     )
     return any(ISSUE_TITLE in issue["title"] for issue in r.json())
+
 
 def create_issue():
     r = requests.post(
         f"https://api.github.com/repos/{REPO}/issues",
         headers={"Authorization": f"Bearer {GITHUB_TOKEN}"},
-        json={"title": ISSUE_TITLE, "body": ISSUE_BODY}
+        json={"title": ISSUE_TITLE, "body": ISSUE_BODY},
     )
     print(f"Issue created: {r.json().get('html_url')}")
+
 
 if __name__ == "__main__":
     if not issue_exists():

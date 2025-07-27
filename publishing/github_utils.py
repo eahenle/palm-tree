@@ -6,9 +6,12 @@ from pathlib import Path
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")  # e.g., "username/blog"
-REPO = Github(GITHUB_TOKEN).get_repo(GITHUB_REPO) if GITHUB_TOKEN and GITHUB_REPO else None
+REPO = (
+    Github(GITHUB_TOKEN).get_repo(GITHUB_REPO) if GITHUB_TOKEN and GITHUB_REPO else None
+)
 
 PR_CONTEXT_FILE = "/tmp/last_pr.txt"
+
 
 def get_pr_diff_and_comments(pr_number: int):
     pr = get_repo().get_pull(pr_number)
@@ -19,6 +22,7 @@ def get_pr_diff_and_comments(pr_number: int):
     comment_text = "\n\n".join([f"{c.user.login}: {c.body}" for c in comments])
 
     return diff_text, comment_text
+
 
 def save_pr_to_local(pr_number: int, diff_text: str, comments: str) -> str:
     base_dir = Path(f"data/pr_{pr_number}")
@@ -34,6 +38,7 @@ def save_pr_to_local(pr_number: int, diff_text: str, comments: str) -> str:
         f.write(str(pr_number))
 
     return str(base_dir)
+
 
 def merge_pr_from_context():
     if not os.path.exists(PR_CONTEXT_FILE):
@@ -52,6 +57,7 @@ def merge_pr_from_context():
     else:
         return f"⚠️ PR #{pr_number} is not mergeable right now."
 
+
 import hashlib
 import json
 
@@ -59,11 +65,13 @@ CACHE_PATH = Path(".agent_cache")
 CACHE_PATH.mkdir(exist_ok=True)
 PR_SHAS_FILE = CACHE_PATH / "pr_shas.json"
 
+
 def get_cached_shas():
     if PR_SHAS_FILE.exists():
         with open(PR_SHAS_FILE) as f:
             return json.load(f)
     return {}
+
 
 def update_cached_sha(pr_number: int, sha: str):
     shas = get_cached_shas()
@@ -71,8 +79,10 @@ def update_cached_sha(pr_number: int, sha: str):
     with open(PR_SHAS_FILE, "w") as f:
         json.dump(shas, f)
 
+
 def compute_diff_sha(diff_text: str) -> str:
     return hashlib.sha256(diff_text.encode()).hexdigest()
+
 
 def should_skip_review(pr_number: int, new_sha: str) -> bool:
     shas = get_cached_shas()

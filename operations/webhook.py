@@ -7,9 +7,11 @@ import subprocess
 app = Flask(__name__)
 SECRET = os.getenv("WEBHOOK_SECRET", "changeme").encode()
 
+
 def verify_signature(payload, signature):
     hash_mac = hmac.new(SECRET, payload, hashlib.sha256).hexdigest()
     return hmac.compare_digest("sha256=" + hash_mac, signature)
+
 
 @app.route("/", methods=["POST"])
 def webhook():
@@ -24,6 +26,7 @@ def webhook():
         return "Updated", 200
 
     return "Ignored", 200
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=9000)

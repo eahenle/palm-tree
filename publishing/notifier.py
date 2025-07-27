@@ -11,6 +11,7 @@ EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 
+
 def send_email(subject: str, body: str):
     msg = EmailMessage()
     msg["From"] = EMAIL_FROM
@@ -23,6 +24,7 @@ def send_email(subject: str, body: str):
         smtp.login(EMAIL_USER, EMAIL_PASS)
         smtp.send_message(msg)
         print(f"📧 Email sent: {subject}")
+
 
 def send_discord_message(content: str):
     if not DISCORD_WEBHOOK_URL:
@@ -38,6 +40,7 @@ def send_discord_message(content: str):
 
 from config import OPENAI_API_KEY
 import openai
+
 
 def summarize_blog_post(post_content: str, pr_title: str) -> str:
     prompt = f"""Summarize the following blog post titled '{pr_title}' in 1–3 sentences for a general audience. Highlight why it’s interesting or useful. Keep it friendly and professional.

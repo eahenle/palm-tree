@@ -16,6 +16,7 @@ TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken"
 
 SCOPE = "w_member_social"
 
+
 def get_authorization_url():
     params = {
         "response_type": "code",
@@ -26,19 +27,24 @@ def get_authorization_url():
     }
     return f"{AUTH_URL}?{urlencode(params)}"
 
+
 def fetch_access_token(auth_code):
-    response = requests.post(TOKEN_URL, data={
-        "grant_type": "authorization_code",
-        "code": auth_code,
-        "redirect_uri": REDIRECT_URI,
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET,
-    })
+    response = requests.post(
+        TOKEN_URL,
+        data={
+            "grant_type": "authorization_code",
+            "code": auth_code,
+            "redirect_uri": REDIRECT_URI,
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET,
+        },
+    )
 
     data = response.json()
     with open(TOKEN_FILE, "w") as f:
         json.dump(data, f)
     return data["access_token"]
+
 
 def load_access_token():
     if not os.path.exists(TOKEN_FILE):
@@ -49,15 +55,14 @@ def load_access_token():
         data = json.load(f)
     return data["access_token"]
 
+
 def post_to_linkedin(summary: str, title: str, url: str):
     token = load_access_token()
     if not token:
         return
 
     headers = {"Authorization": f"Bearer {token}"}
-    profile_res = requests.get(
-        "https://api.linkedin.com/v2/me", headers=headers
-    )
+    profile_res = requests.get("https://api.linkedin.com/v2/me", headers=headers)
     user_id = profile_res.json().get("id")
 
     hashtags = ["AI", "Python", "Blogging", "MachineLearning"]
@@ -71,10 +76,10 @@ def post_to_linkedin(summary: str, title: str, url: str):
                 "shareCommentary": {
                     "text": f"🚀 New blog post: {title}\n\n{summary}\n\nRead it here: {url}\n\n{tag_str}"
                 },
-                "shareMediaCategory": "NONE"
+                "shareMediaCategory": "NONE",
             }
         },
-        "visibility": {"com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"}
+        "visibility": {"com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"},
     }
 
     post_res = requests.post(
