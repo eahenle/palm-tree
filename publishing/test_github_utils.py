@@ -4,11 +4,13 @@ from publishing.github_utils import (
     update_cached_sha,
 )
 
+
 def test_compute_diff_sha_consistency():
     diff = "file.md:\n- old\n+ new"
     sha1 = compute_diff_sha(diff)
     sha2 = compute_diff_sha(diff)
     assert sha1 == sha2
+
 
 def test_should_skip_review(tmp_path, monkeypatch):
     # Fake SHA DB
@@ -21,6 +23,7 @@ def test_should_skip_review(tmp_path, monkeypatch):
 
     assert should_skip_review(pr_number, "abc123")
     assert not should_skip_review(pr_number, "xyz789")
+
 
 def test_update_cached_sha_roundtrip(tmp_path, monkeypatch):
     pr_number = 100

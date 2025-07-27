@@ -35,8 +35,10 @@ def handle_pr_request(pr_number: int) -> str:
         tools=tools,
         llm=llm,
         system_prompt="You are a code review assistant for markdown blog posts. Review the proposed edits and suggest improvements.",
-        context_retriever=index.as_retriever()
+        context_retriever=index.as_retriever(),
     )
 
     # 5. Run it
-    return agent.chat("Please review this pull request and suggest improvements.").response
+    return agent.chat(
+        "Please review this pull request and suggest improvements."
+    ).response

@@ -26,8 +26,11 @@ POSTS_DIR.mkdir(parents=True, exist_ok=True)
 def git_run(cmd, cwd):
     subprocess.run(cmd, cwd=cwd, check=True)
 
+
 def create_branch_and_commit_post(repo_dir: Path, filename: str, content: str):
-    branch_name = f"post/{datetime.datetime.now().strftime('%Y-%m-%d')}-{uuid.uuid4().hex[:6]}"
+    branch_name = (
+        f"post/{datetime.datetime.now().strftime('%Y-%m-%d')}-{uuid.uuid4().hex[:6]}"
+    )
     git_run(["git", "checkout", "-b", branch_name], cwd=repo_dir)
 
     post_path = repo_dir / "_posts" / filename
@@ -40,13 +43,8 @@ def create_branch_and_commit_post(repo_dir: Path, filename: str, content: str):
     return branch_name
 
 
-
 def open_pull_request(
-    repo: str,
-    head_branch: str,
-    base_branch: str,
-    github_token: str,
-    post_title: str
+    repo: str, head_branch: str, base_branch: str, github_token: str, post_title: str
 ):
     url = f"https://api.github.com/repos/{repo}/pulls"
     headers = {"Authorization": f"Bearer {github_token}"}
@@ -54,12 +52,11 @@ def open_pull_request(
         "title": f"New blog post: {post_title}",
         "head": head_branch,
         "base": base_branch,
-        "body": f"This PR adds a new blog post titled: **{post_title}**"
+        "body": f"This PR adds a new blog post titled: **{post_title}**",
     }
     response = requests.post(url, headers=headers, json=data)
     response.raise_for_status()
     print(f"Pull request created: {response.json()['html_url']}")
-
 
 
 # === Chat Downloading ===
@@ -174,7 +171,7 @@ def save_draft_to_jekyll(idea: str, content: str, category="chatgpt", tags=None)
     front_matter = (
         "---\n"
         f"layout: post\n"
-        f"title: \"{idea}\"\n"
+        f'title: "{idea}"\n'
         f"date: {now.strftime('%Y-%m-%d %H:%M:%S')} -0700\n"
         f"categories: [{category}]\n"
         f"tags: [{', '.join(tags)}]\n"

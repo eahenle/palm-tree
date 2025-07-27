@@ -4,7 +4,9 @@ import requests
 webhook_url = os.getenv("DISCORD_WEBHOOK")
 repo_url = f"https://github.com/{os.getenv('GITHUB_REPOSITORY')}"
 issue_title = "🚫 ChatGPT Login Expired - Refresh Needed"
-search_url = f"{repo_url}/issues?q=is%3Aissue+is%3Aopen+{requests.utils.quote(issue_title)}"
+search_url = (
+    f"{repo_url}/issues?q=is%3Aissue+is%3Aopen+{requests.utils.quote(issue_title)}"
+)
 
 message = {
     "content": (

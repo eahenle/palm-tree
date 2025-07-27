@@ -8,6 +8,7 @@ GITHUB_REPO = os.getenv("GITHUB_REPO")  # format: "username/repo"
 DISCORD_URL = os.getenv("DISCORD_URL")
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "changeme")
 
+
 def get_ngrok_url():
     try:
         resp = requests.get("http://localhost:4040/api/tunnels")
@@ -20,6 +21,7 @@ def get_ngrok_url():
         print(f"Error getting ngrok URL: {e}")
     return None
 
+
 def post_to_discord(url):
     if not DISCORD_URL:
         return
@@ -29,13 +31,14 @@ def post_to_discord(url):
     except Exception as e:
         print(f"Error posting to Discord: {e}")
 
+
 def update_github_webhook(public_url):
     if not GITHUB_TOKEN or not GITHUB_REPO:
         print("Missing GitHub credentials.")
         return
     headers = {
         "Authorization": f"token {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github+json"
+        "Accept": "application/vnd.github+json",
     }
 
     # Step 1: Get current webhooks
@@ -61,7 +64,7 @@ def update_github_webhook(public_url):
             "url": f"{public_url}/",
             "content_type": "json",
             "secret": WEBHOOK_SECRET,
-            "insecure_ssl": "0"
+            "insecure_ssl": "0",
         }
     }
     patch_resp = requests.patch(patch_url, headers=headers, json=data)
@@ -69,6 +72,7 @@ def update_github_webhook(public_url):
         print(f"✅ GitHub webhook updated to {public_url}/")
     else:
         print(f"❌ Failed to update webhook: {patch_resp.text}")
+
 
 if __name__ == "__main__":
     time.sleep(5)

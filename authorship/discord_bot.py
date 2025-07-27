@@ -13,9 +13,11 @@ intents.messages = True
 intents.message_content = True
 client = discord.Client(intents=intents)
 
+
 @client.event
 async def on_ready():
     print(f"🤖 Logged in as {client.user}")
+
 
 @client.event
 async def on_message(message):
@@ -27,6 +29,7 @@ async def on_message(message):
     if content.lower().startswith("!lgtm"):
         await message.channel.send("✅ Merge command received. Merging PR...")
         from publishing.github_utils import merge_pr_from_context
+
         result = merge_pr_from_context()
         await message.channel.send(result)
 
@@ -38,5 +41,6 @@ async def on_message(message):
             await message.channel.send(reply)
         except Exception as e:
             await message.channel.send(f"⚠️ Failed to review PR: {e}")
+
 
 client.run(TOKEN)

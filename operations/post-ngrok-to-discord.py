@@ -5,6 +5,7 @@ import os
 
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_URL")  # set this in .env
 
+
 def get_ngrok_url():
     try:
         resp = requests.get("http://localhost:4040/api/tunnels")
@@ -17,9 +18,11 @@ def get_ngrok_url():
         print(f"Error: {e}")
     return None
 
+
 def post_to_discord(url):
     content = f"🔗 Ngrok tunnel is live: {url}"
     requests.post(DISCORD_WEBHOOK_URL, json={"content": content})
+
 
 if __name__ == "__main__":
     time.sleep(5)  # wait a few seconds for ngrok to start

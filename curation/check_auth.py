@@ -2,6 +2,7 @@
 import asyncio
 from playwright.async_api import async_playwright
 
+
 async def is_login_valid() -> bool:
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
@@ -10,9 +11,11 @@ async def is_login_valid() -> bool:
 
         try:
             await page.goto("https://chat.openai.com/")
-            result = await page.evaluate("""() =>
+            result = await page.evaluate(
+                """() =>
                 fetch("/api/auth/session").then(r => r.ok)
-            """)
+            """
+            )
         except Exception as e:
             print(f"Error during login check: {e}")
             return False
@@ -20,6 +23,7 @@ async def is_login_valid() -> bool:
             await browser.close()
 
         return result
+
 
 if __name__ == "__main__":
     result = asyncio.run(is_login_valid())

@@ -5,6 +5,7 @@ from config import GITHUB_REPO, GITHUB_TOKEN
 gh = Github(GITHUB_TOKEN)
 repo = gh.get_repo(GITHUB_REPO)
 
+
 def main():
     pulls = repo.get_pulls(state="closed")
     for pr in pulls:
@@ -18,6 +19,7 @@ def main():
 
             # Mark PR as notified
             pr.edit(body=pr.body + "\n\n<!--notified-->")
+
 
 if __name__ == "__main__":
     main()

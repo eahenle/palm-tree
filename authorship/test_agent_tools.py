@@ -1,5 +1,6 @@
 from authorship.agent_tools import SuggestTitleTool
 
+
 def test_title_suggestion():
     tool = SuggestTitleTool()
     content = "# this is a blog post\n\nmore text"
