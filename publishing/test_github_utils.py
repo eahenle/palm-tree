@@ -1,5 +1,7 @@
 from publishing.github_utils import (
     compute_diff_sha,
+    get_repo,
+    save_pr_to_local,
     should_skip_review,
     update_cached_sha,
 )
@@ -37,3 +39,25 @@ def test_update_cached_sha_roundtrip(tmp_path, monkeypatch):
     finally:
         if cache_file.exists():
             cache_file.unlink()
+
+
+def test_get_repo_raises_when_unconfigured(monkeypatch):
+    monkeypatch.setattr("publishing.github_utils.REPO", None)
+
+    try:
+        get_repo()
+        assert False, "Expected RuntimeError"
+    except RuntimeError as exc:
+        assert "GitHub repo is not configured" in str(exc)
+
+
+def test_save_pr_to_local_writes_expected_files(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    context_path = tmp_path / "last_pr.txt"
+    monkeypatch.setattr("publishing.github_utils.PR_CONTEXT_FILE", str(context_path))
+
+    output_dir = save_pr_to_local(7, "diff body", "comment body")
+
+    assert (tmp_path / output_dir / "diff.md").exists()
+    assert (tmp_path / output_dir / "comments.md").exists()
+    assert context_path.read_text() == "7"

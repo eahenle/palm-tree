@@ -1,8 +1,9 @@
-# github_utils.py
+import hashlib
+import json
 import os
-import requests
-from github import Github
 from pathlib import Path
+
+from github import Github
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")  # e.g., "username/blog"
@@ -11,6 +12,14 @@ REPO = (
 )
 
 PR_CONTEXT_FILE = "/tmp/last_pr.txt"
+
+
+def get_repo():
+    if REPO is None:
+        raise RuntimeError(
+            "GitHub repo is not configured. Set GITHUB_TOKEN and GITHUB_REPO."
+        )
+    return REPO
 
 
 def get_pr_diff_and_comments(pr_number: int):
@@ -57,9 +66,6 @@ def merge_pr_from_context():
     else:
         return f"⚠️ PR #{pr_number} is not mergeable right now."
 
-
-import hashlib
-import json
 
 CACHE_PATH = Path(".agent_cache")
 CACHE_PATH.mkdir(exist_ok=True)
