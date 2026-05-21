@@ -33,25 +33,21 @@ async def fetch_chatgpt_chats():
 
         # Get token
         await page.goto("https://chat.openai.com/")
-        session = await page.evaluate(
-            """() => {
+        session = await page.evaluate("""() => {
             return fetch("/api/auth/session").then(r => r.json());
-        }"""
-        )
+        }""")
         token = session["accessToken"]
 
         # Fetch conversations
         headers = {"Authorization": f"Bearer {token}"}
         await page.goto(CHAT_LIST_URL, wait_until="networkidle")
-        response = await page.evaluate(
-            f"""() => {{
+        response = await page.evaluate(f"""() => {{
             return fetch("{CHAT_LIST_URL}", {{
                 headers: {{
                     Authorization: "Bearer {token}"
                 }}
             }}).then(r => r.json());
-        }}"""
-        )
+        }}""")
 
         for convo in response.get("items", []):
             cid = convo["id"]

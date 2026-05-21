@@ -119,32 +119,24 @@ def extract_ideas_from_chat(chat: dict) -> List[str]:
         contents.append(f"{role}: {content}")
     transcript = "\n".join(contents)
 
-    prompt = [
-        HumanMessage(
-            content=f"""
+    prompt = [HumanMessage(content=f"""
         Analyze the following ChatGPT conversation and extract 3 distinct, interesting ideas that could form the basis of technical or reflective blog posts:
 
         {transcript}
-        """
-        )
-    ]
+        """)]
     response = llm(prompt)
     ideas = response.content.strip().split("\n")
     return [idea.strip("- ").strip() for idea in ideas if idea.strip()]
 
 
 def generate_blog_draft(idea: str) -> str:
-    prompt = [
-        HumanMessage(
-            content=f"""
+    prompt = [HumanMessage(content=f"""
         Write a detailed, informative blog post based on this idea:
 
         "{idea}"
 
         The blog post should include an engaging introduction, several structured sections, and a thoughtful conclusion. Aim for a professional yet conversational tone.
-        """
-        )
-    ]
+        """)]
     response = llm(prompt)
     return response.content.strip()
 

@@ -11,11 +11,9 @@ async def is_login_valid() -> bool:
 
         try:
             await page.goto("https://chat.openai.com/")
-            result = await page.evaluate(
-                """() =>
+            result = await page.evaluate("""() =>
                 fetch("/api/auth/session").then(r => r.ok)
-            """
-            )
+            """)
         except Exception as e:
             print(f"Error during login check: {e}")
             return False
