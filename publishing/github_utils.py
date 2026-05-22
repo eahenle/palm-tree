@@ -54,7 +54,12 @@ def merge_pr_from_context():
         return "❌ No prior PR context found."
 
     with open(PR_CONTEXT_FILE) as f:
-        pr_number = int(f.read().strip())
+        raw_pr_number = f.read().strip()
+
+    if not raw_pr_number.isdigit():
+        return "❌ PR context is invalid. Re-run review to store a valid PR number."
+
+    pr_number = int(raw_pr_number)
 
     pr = get_repo().get_pull(pr_number)
     if pr.is_merged():
