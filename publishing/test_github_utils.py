@@ -1,6 +1,7 @@
 from publishing.github_utils import (
     compute_diff_sha,
     get_repo,
+    merge_pr_from_context,
     save_pr_to_local,
     should_skip_review,
     update_cached_sha,
@@ -61,3 +62,13 @@ def test_save_pr_to_local_writes_expected_files(tmp_path, monkeypatch):
     assert (tmp_path / output_dir / "diff.md").exists()
     assert (tmp_path / output_dir / "comments.md").exists()
     assert context_path.read_text() == "7"
+
+
+def test_merge_pr_from_context_invalid_context_file(tmp_path, monkeypatch):
+    context_path = tmp_path / "last_pr.txt"
+    context_path.write_text("not-a-number")
+    monkeypatch.setattr("publishing.github_utils.PR_CONTEXT_FILE", str(context_path))
+
+    result = merge_pr_from_context()
+
+    assert "PR context is invalid" in result
