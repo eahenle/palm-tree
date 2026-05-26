@@ -13,11 +13,11 @@ ruff check .
 mypy .
 ```
 
-If `ruff` or `mypy` are not installed yet, install dev dependencies from the
-root requirements file:
+Install required tooling first (the root `requirements.txt` does **not** include
+`black`, `ruff`, or `mypy`):
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt black ruff mypy
 ```
 
 ## Commit message format
