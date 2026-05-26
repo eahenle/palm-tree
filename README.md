@@ -21,3 +21,8 @@ These tools don't consume the index directly but operate on the pull request via
 the GitHub API. The index simply provides context for the language model during
 the agent run.
 
+
+
+## Contributing
+
+See `CONTRIBUTING.md` for local quality checks and PR expectations.
